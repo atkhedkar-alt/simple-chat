@@ -1,3 +1,7 @@
 [
   { "sender": "Anonymous", "text": "Welcome to the chat!" }
 ]
+[
+  { "sender": "Anonymous", "text": "Welcome to the chat!" },
+  { "sender": "Arvind", "text": "Hello everyone, I’m here!" }
+]
