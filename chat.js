@@ -1,31 +1,41 @@
-async function sendMessage(){
-  const text = document.getElementById("chatInput").value.trim();
-  if(!text) return;
+// Function to send a new message (local-only version for testing)
+async function sendMessage() {
+  const message = document.getElementById("messageInput").value;
 
-  const token = ""; // paste your token here
-  const repo = "atkhedkar-alt/simple-chat"; // replace with your repo name
-  const path = "messages.json";
+  if (!message) {
+    alert("Please type a message first!");
+    return;
+  }
 
-  // 1. Get current file
-  let res = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
-    headers: { Authorization: `token ${token}` }
-  });
-  let file = await res.json();
-  let content = JSON.parse(atob(file.content));
+  const chatWindow = document.getElementById("chatWindow");
 
-  // 2. Add new message
-  content.push({ sender: "Arvind", text });
+  const msgDiv = document.createElement("div");
+  msgDiv.classList.add("message", "mine");
 
-  // 3. Commit updated file
-  await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
-    method: "PUT",
-    headers: { Authorization: `token ${token}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      message: "add new chat message",
-      content: btoa(JSON.stringify(content, null, 2)),
-      sha: file.sha
-    })
-  });
+  const text = document.createElement("div");
+  text.textContent = message;
 
-  document.getElementById("chatInput").value = "";
+  const time = document.createElement("small");
+  const date = new Date();
+  time.textContent = date.toLocaleString();
+  time.classList.add("timestamp");
+
+  msgDiv.appendChild(text);
+  msgDiv.appendChild(time);
+  chatWindow.appendChild(msgDiv);
+
+  document.getElementById("messageInput").value = "";
 }
+
+// Function to load messages (placeholder for GitHub integration)
+async function loadMessages() {
+  // For now, this just keeps the chat window as-is.
+  // Later, you can connect this to GitHub Issues API.
+}
+
+// Load messages when the page opens + auto-refresh
+window.onload = () => {
+  loadMessages();
+  // Auto-refresh every 10 seconds
+  setInterval(loadMessages, 10000);
+};
