@@ -1,47 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Shared Chat</title>
-  <style>
-    body { background:#121212; color:#eee; font-family:sans-serif; text-align:center; }
-    #messages { border:1px solid #444; width:60%; margin:auto; height:200px; overflow-y:scroll; padding:10px; text-align:left; background:#1f1f1f; }
-    .msg { margin:5px 0; }
-    .sender { color:#90caf9; font-weight:bold; }
-    input, button { margin:5px; padding:8px; border-radius:4px; border:1px solid #444; background:#1f1f1f; color:#eee; }
-  </style>
+  <meta charset="UTF-8">
+  <title>Simple Chat</title>
 </head>
 <body>
-  <h1>Simple Shared Chat</h1>
-  <div id="messages"></div>
-  <input type="text" id="chatInput" placeholder="Type a message">
+  <h1>Simple Chat</h1>
+
+  <!-- Chat messages will load here -->
+  <div id="chat"></div>
+
+  <!-- Input + Send button -->
+  <input id="chatInput" type="text" placeholder="Type a message...">
   <button onclick="sendMessage()">Send</button>
 
+  <!-- Script to refresh messages every 5 seconds -->
   <script>
-    const dataUrl = "messages.json"; // file in your repo
-
     async function loadMessages(){
-      const res = await fetch(dataUrl + "?t=" + Date.now()); // prevent caching
-      const msgs = await res.json();
-      const box = document.getElementById("messages");
-      box.innerHTML = "";
-      msgs.forEach(m=>{
-        const div = document.createElement("div");
-        div.className = "msg";
-        div.innerHTML = `<span class="sender">${m.sender}:</span> ${m.text}`;
-        box.appendChild(div);
-      });
-      box.scrollTop = box.scrollHeight;
-    }
+      const repo = "atkhedkar-alt/simple-chat"; // replace with your repo
+      const path = "messages.json";
 
-    function sendMessage(){
-      const text = document.getElementById("chatInput").value.trim();
-      if(!text) return;
-      alert("To share this message, edit messages.json in GitHub and add it there.");
-      document.getElementById("chatInput").value = "";
+      let res = await fetch(`https://raw.githubusercontent.com/${repo}/main/${path}`);
+      let messages = await res.json();
+
+      let chatDiv = document.getElementById("chat");
+      chatDiv.innerHTML = "";
+      messages.forEach(msg => {
+        let p = document.createElement("p");
+        p.textContent = msg.sender + ": " + msg.text;
+        chatDiv.appendChild(p);
+      });
     }
 
     loadMessages();
     setInterval(loadMessages, 5000); // refresh every 5s
   </script>
+
+  <!-- External JS file with Send button logic -->
+  <script src="chat.js"></script>
 </body>
 </html>
